@@ -12,10 +12,7 @@ using UnityEngine.Advertisements;
 using UnityEngine.Analytics;
 #endif
 
-/// <summary>
-/// Pushed on top of the GameManager during gameplay. Takes care of initializing all the UI and start the TrackManager
-/// Also will take care of cleaning when leaving that state.
-/// </summary>
+
 public class GameState : AState
 {
 	static int s_DeadHash = Animator.StringToHash("Dead");
@@ -77,7 +74,7 @@ public class GameState : AState
 
     protected int k_MaxLives = 3;
 
-    protected bool m_IsTutorial; //Tutorial is a special run that don't chance section until the tutorial step is "validated".
+    protected bool m_IsTutorial; 
     protected int m_TutorialClearedObstacle = 0;
     protected bool m_CountObstacles = true;
     protected bool m_DisplayTutorial;
@@ -184,7 +181,7 @@ public class GameState : AState
     {
         if (m_Finished)
         {
-            //if we are finished, we check if advertisement is ready, allow to disable the button until it is ready
+            
 #if UNITY_ADS
             if (!trackManager.isTutorial && !m_AdsInitialised && Advertisement.IsReady(adsPlacementId))
             {
@@ -201,7 +198,7 @@ public class GameState : AState
             else if(trackManager.isTutorial || !m_AdsInitialised)
                 adsForLifeButton.SetActive(false);
 #else
-            adsForLifeButton.SetActive(false); //Ads is disabled
+            adsForLifeButton.SetActive(false); 
 #endif
 
             return;
@@ -222,7 +219,7 @@ public class GameState : AState
                 StartCoroutine(WaitForGameOver());
             }
 
-            // Consumable ticking & lifetime management
+            
             List<Consumable> toRemove = new List<Consumable>();
             List<PowerupIcon> toRemoveIcon = new List<PowerupIcon>();
 
@@ -246,7 +243,7 @@ public class GameState : AState
                 }
                 else if (icon == null)
                 {
-                    // If there's no icon for the active consumable, create it!
+                    
                     GameObject o = Instantiate(PowerupIconPrefab);
 
                     icon = o.GetComponent<PowerupIcon>();
@@ -291,7 +288,7 @@ public class GameState : AState
 
     public void Pause(bool displayMenu = true)
 	{
-		//check if we aren't finished OR if we aren't already in pause (as that would mess states)
+		
 		if (m_Finished || AudioListener.pause == true)
 			return;
 
@@ -321,7 +318,7 @@ public class GameState : AState
 
 	public void QuitToLoadout()
 	{
-		// Used by the pause menu to return immediately to loadout, canceling everything.
+		
 		Time.timeScale = 1.0f;
 		AudioListener.pause = false;
 		trackManager.End();
@@ -364,7 +361,7 @@ public class GameState : AState
 			m_CountdownRectTransform.localScale = Vector3.zero;
 		}
 
-        // Consumable
+        
         if (trackManager.characterController.inventory != null)
         {
             inventoryIcon.transform.parent.gameObject.SetActive(true);
@@ -379,7 +376,7 @@ public class GameState : AState
 		m_Finished = true;
 		trackManager.StopMove();
 
-        // Reseting the global blinking value. Can happen if game unexpectly exited while still blinking
+        
         Shader.SetGlobalFloat("_BlinkingValue", 0.0f);
 
         yield return new WaitForSeconds(2.0f);
@@ -423,18 +420,14 @@ public class GameState : AState
 
     public void PremiumForLife()
     {
-        //This check avoid a bug where the video AND premium button are released on the same frame.
-        //It lead to the ads playing and then crashing the game as it try to start the second wind again.
-        //Whichever of those function run first will take precedence
+        
         if (m_GameoverSelectionDone)
             return;
 
         m_GameoverSelectionDone = true;
 
         PlayerData.instance.premium -= 3;
-        //since premium are directly added to the PlayerData premium count, we also need to remove them from the current run premium count
-        // (as if you had 0, grabbed 3 during that run, you can directly buy a new chance). But for the case where you add one in the playerdata
-        // and grabbed 2 during that run, we don't want to remove 3, otherwise will have -1 premium for that run!
+       
         trackManager.characterController.premium -= Mathf.Min(trackManager.characterController.premium, 3);
 
         SecondWind();
@@ -480,7 +473,7 @@ public class GameState : AState
 #endif
     }
 
-    //=== AD
+    
 #if UNITY_ADS
 
     private void HandleShowResult(ShowResult result)
@@ -548,7 +541,7 @@ public class GameState : AState
                 tutorialValidatedObstacles.text = "Passed!";
 
                 if (trackManager.currentZone == 0)
-                {//we looped, mean we finished the tutorial.
+                {
                     trackManager.characterController.currentTutorialLevel = 3;
                     DisplayTutorial(true);
                 }

@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
-/// <summary>
-/// Handle everything related to controlling the character. Interact with both the Character (visual, animation) and CharacterCollider
-/// </summary>
+
 public class CharacterInputController : MonoBehaviour
 {
     static int s_DeadHash = Animator.StringToHash ("Dead");
@@ -32,7 +30,7 @@ public class CharacterInputController : MonoBehaviour
 	public bool isSliding { get { return m_Sliding; } }
 
 	[Header("Controls")]
-	public float jumpLength = 2.0f;     // Distance jumped
+	public float jumpLength = 2.0f;     
 	public float jumpHeight = 1.2f;
 
 	public float slideLength = 2.0f;
@@ -90,7 +88,7 @@ public class CharacterInputController : MonoBehaviour
 	protected bool m_IsSwiping = false;
 #endif
 
-    // Cheating functions, use for testing
+    
 	public void CheatInvincible(bool invincible)
 	{
 		m_IsInvincible = invincible;
@@ -116,7 +114,7 @@ public class CharacterInputController : MonoBehaviour
 		m_ObstacleLayer = 1 << LayerMask.NameToLayer("Obstacle");
     }
 
-	// Called at the beginning of a run or rerun
+	
 	public void Begin()
 	{
 		m_IsRunning = false;
@@ -178,8 +176,7 @@ public class CharacterInputController : MonoBehaviour
 	protected void Update ()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
-        // Use key input in editor or standalone
-        // disabled if it's tutorial and not thecurrent right tutorial level (see func TutorialMoveCheck)
+       
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) && TutorialMoveCheck(0))
         {
@@ -257,13 +254,12 @@ public class CharacterInputController : MonoBehaviour
 
 		if (m_Sliding)
 		{
-            // Slide time isn't constant but the slide length is (even if slightly modified by speed, to slide slightly further when faster).
-            // This is for gameplay reason, we don't want the character to drasticly slide farther when at max speed.
+            
 			float correctSlideLength = slideLength * (1.0f + trackManager.speedRatio);
 			float ratio = (trackManager.worldDistance - m_SlideStart) / correctSlideLength;
 			if (ratio >= 1.0f)
 			{
-                // We slid to (or past) the required length, go back to running
+                
 				StopSliding();
 			}
 		}
@@ -272,8 +268,7 @@ public class CharacterInputController : MonoBehaviour
         {
 			if (trackManager.isMoving)
 			{
-                // Same as with the sliding, we want a fixed jump LENGTH not fixed jump TIME. Also, just as with sliding,
-                // we slightly modify length with speed to make it more playable.
+               
 				float correctJumpLength = jumpLength * (1.0f + trackManager.speedRatio);
 				float ratio = (trackManager.worldDistance - m_JumpStart) / correctJumpLength;
 				if (ratio >= 1.0f)
@@ -286,7 +281,7 @@ public class CharacterInputController : MonoBehaviour
 					verticalTargetPosition.y = Mathf.Sin(ratio * Mathf.PI) * jumpHeight;
 				}
 			}
-			else if(!AudioListener.pause)//use AudioListener.pause as it is an easily accessible singleton & it is set when the app is in pause too
+			else if(!AudioListener.pause)
 			{
 			    verticalTargetPosition.y = Mathf.MoveTowards (verticalTargetPosition.y, 0, k_GroundingSpeed * Time.deltaTime);
 				if (Mathf.Approximately(verticalTargetPosition.y, 0f))
@@ -299,7 +294,7 @@ public class CharacterInputController : MonoBehaviour
 
         characterCollider.transform.localPosition = Vector3.MoveTowards(characterCollider.transform.localPosition, verticalTargetPosition, laneChangeSpeed * Time.deltaTime);
 
-        // Put blob shadow under the character.
+        
         RaycastHit hit;
         if(Physics.Raycast(characterCollider.transform.position + Vector3.up, Vector3.down, out hit, k_ShadowRaycastDistance, m_ObstacleLayer))
         {
@@ -386,7 +381,7 @@ public class CharacterInputController : MonoBehaviour
         int targetLane = m_CurrentLane + direction;
 
         if (targetLane < 0 || targetLane > 2)
-            // Ignore, we are on the borders.
+           
             return;
 
         m_CurrentLane = targetLane;
@@ -410,14 +405,14 @@ public class CharacterInputController : MonoBehaviour
         {
             if(m_ActiveConsumables[i].GetType() == c.GetType())
             {
-				// If we already have an active consumable of that type, we just reset the time
+				
                 m_ActiveConsumables[i].ResetTime();
                 Addressables.ReleaseInstance(c.gameObject);
                 return;
             }
         }
 
-        // If we didn't had one, activate that one 
+        
         c.transform.SetParent(transform, false);
         c.gameObject.SetActive(false);
 

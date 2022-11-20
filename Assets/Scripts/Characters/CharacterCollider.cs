@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AddressableAssets;
 
-/// <summary>
-/// Handles everything related to the collider of the character. This is actually an empty game object, NOT on the character prefab
-/// as for gameplay reason, we need a single size collider for every character. (Found on the Main scene PlayerPivot/CharacterSlot gameobject)
-/// </summary>
+
+
 [RequireComponent(typeof(AudioSource))]
 public class CharacterCollider : MonoBehaviour
 {
 	static int s_HitHash = Animator.StringToHash("Hit");
     static int s_BlinkingValueHash;
 
-    // Used mainly by by analytics, but not in an analytics ifdef block 
-    // so that the data is available to anything (e.g. could be used for player stat saved locally etc.)
+   
 	public struct DeathEvent
     {
         public string character;
@@ -93,7 +90,7 @@ public class CharacterCollider : MonoBehaviour
 
     protected void Update()
 	{
-        // Every coin registered to the magnetCoin list (used by the magnet powerup exclusively, but could be used by other power up) is dragged toward the player.
+        
 		for(int i = 0; i < magnetCoins.Count; ++i)
 		{
             magnetCoins[i].transform.position = Vector3.MoveTowards(magnetCoins[i].transform.position, transform.position, k_MagnetSpeed * Time.deltaTime);
@@ -158,7 +155,7 @@ public class CharacterCollider : MonoBehaviour
 				m_Audio.PlayOneShot(controller.character.hitSound);
                 SetInvincible ();
 			}
-            // The collision killed the player, record all data to analytics.
+            
 			else
 			{
 				m_Audio.PlayOneShot(controller.character.deathSound);
@@ -206,9 +203,7 @@ public class CharacterCollider : MonoBehaviour
 		{
 			Shader.SetGlobalFloat(s_BlinkingValueHash, currentBlink);
 
-			// We do the check every frame instead of waiting for a full blink period as if the game slow down too much
-			// we are sure to at least blink every frame.
-            // If blink turns on and off in the span of one frame, we "miss" the blink, resulting in appearing not to blink.
+			
             yield return null;
 			time += Time.deltaTime;
 			lastBlink += Time.deltaTime;

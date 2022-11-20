@@ -4,10 +4,7 @@ using UnityEngine.AddressableAssets;
 using UnityEditor;
 #endif
 
-/// <summary>
-/// This defines a "piece" of the track. This is attached to the prefab and contains data such as what obstacles can spawn on it.
-/// It also defines places on the track where obstacles can spawn. The prefab is placed into a ThemeData list.
-/// </summary>
+
 public class TrackSegment : MonoBehaviour
 {
     public Transform pathParent;
@@ -38,7 +35,7 @@ public class TrackSegment : MonoBehaviour
 		collectibleTransform = obj.transform;
     }
 
-    // Same as GetPointAt but using an interpolation parameter in world units instead of 0 to 1.
+    
     public void GetPointAtInWorldUnit(float wt, out Vector3 pos, out Quaternion rot)
     {
         float t = wt / m_WorldLength;
@@ -46,7 +43,7 @@ public class TrackSegment : MonoBehaviour
     }
 
 
-	// Interpolation parameter t is clamped between 0 and 1.
+	
 	public void GetPointAt(float t, out Vector3 pos, out Quaternion rot)
     {
         float clampedT = Mathf.Clamp01(t);

@@ -1,10 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// This script is the base class for implemented obstacles.
-/// Derived classes should take care of spawning any object needed for the obstacles.
-/// </summary>
+
 [RequireComponent(typeof(AudioSource))]
 public abstract class Obstacle : MonoBehaviour
 {

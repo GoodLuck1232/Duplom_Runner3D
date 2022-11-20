@@ -8,7 +8,7 @@ public class MusicPlayer : MonoBehaviour
     {
         public AudioSource source;
         public AudioClip clip;
-        public float startingSpeedRatio;    // The stem will start when this is lower than currentSpeed/maxSpeed.
+        public float startingSpeedRatio;   
     }
 
 	static protected MusicPlayer s_Instance;
@@ -28,7 +28,7 @@ public class MusicPlayer : MonoBehaviour
 
         s_Instance = this;
 
-        // As this is one of the first script executed, set that here.
+        
         Application.targetFrameRate = 30;
         AudioListener.pause = false;
         
@@ -82,8 +82,7 @@ public class MusicPlayer : MonoBehaviour
             stems[i].source.Play();
         }
 
-		// This is to fix a bug in the Audio Mixer where attenuation will be applied only a few ms after the source start playing.
-		// So we play all source at volume 0.0f first, then wait 50 ms before finally setting the actual volume.
+		
 		yield return new WaitForSeconds(0.05f);
 
 		for (int i = 0; i < stems.Length; ++i) 

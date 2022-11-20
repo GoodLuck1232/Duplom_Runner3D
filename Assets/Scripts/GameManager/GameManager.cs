@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using UnityEngine.Analytics;
 #endif
 
-/// <summary>
-/// The Game manager is a state machine, that will switch between state according to current gamestate.
-/// </summary>
+
+
 public class GameManager : MonoBehaviour
 {
     static public GameManager instance { get { return s_Instance; } }
@@ -28,7 +27,7 @@ public class GameManager : MonoBehaviour
 
         m_ConsumableDatabase.Load();
 
-        // We build a dictionnary from state for easy switching using their name.
+        
         m_StateDict.Clear();
 
         if (states.Length == 0)
@@ -68,7 +67,7 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    // State management
+    
     public void SwitchState(string newState)
     {
         AState state = FindState(newState);

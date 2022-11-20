@@ -5,9 +5,7 @@ using UnityEngine.Analytics;
 #endif
 using System.Collections.Generic;
  
-/// <summary>
-/// state pushed on top of the GameManager when the player dies.
-/// </summary>
+
 public class GameOverState : AState
 {
     public TrackManager trackManager;
@@ -92,7 +90,7 @@ public class GameOverState : AState
 	{
 		PlayerData.instance.Save();
 
-#if UNITY_ANALYTICS // Using Analytics Standard Events v0.3.0
+#if UNITY_ANALYTICS 
         var transactionId = System.Guid.NewGuid().ToString();
         var transactionContext = "gameplay";
         var level = PlayerData.instance.rank.ToString();
@@ -142,7 +140,7 @@ public class GameOverState : AState
         PlayerData.instance.InsertScore(trackManager.score, miniLeaderboard.playerEntry.inputName.text );
 
         CharacterCollider.DeathEvent de = trackManager.characterController.characterCollider.deathData;
-        //register data to analytics
+        
 #if UNITY_ANALYTICS
         AnalyticsEvent.GameOver(null, new Dictionary<string, object> {
             { "coins", de.coins },
@@ -160,5 +158,5 @@ public class GameOverState : AState
         trackManager.End();
     }
 
-    //----------------
+    
 }

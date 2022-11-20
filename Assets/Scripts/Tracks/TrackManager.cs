@@ -12,22 +12,7 @@ using GameObject = UnityEngine.GameObject;
 using UnityEngine.Analytics;
 #endif
 
-/// <summary>
-/// The TrackManager handles creating track segments, moving them and handling the whole pace of the game.
-/// 
-/// The cycle is as follows:
-/// - Begin is called when the game starts.
-///     - if it's a first run, init the controller, collider etc. and start the movement of the track.
-///     - if it's a rerun (after watching ads on GameOver) just restart the movement of the track.
-/// - Update moves the character and - if the character reaches a certain distance from origin (given by floatingOriginThreshold) -
-/// moves everything back by that threshold to "reset" the player to the origin. This allow to avoid floating point error on long run.
-/// It also handles creating the tracks segements when needed.
-/// 
-/// If the player has no more lives, it pushes the GameOver state on top of the GameState without removing it. That way we can just go back to where
-/// we left off if the player watches an ad and gets a second chance. If the player quits, then:
-/// 
-/// - End is called and everything is cleared and destroyed, and we go back to the Loadout State.
-/// </summary>
+
 public class TrackManager : MonoBehaviour
 {
     static public TrackManager instance { get { return s_Instance; } }
@@ -63,8 +48,7 @@ public class TrackManager : MonoBehaviour
 
     public int trackSeed { get { return m_TrackSeed; } set { m_TrackSeed = value; } }
 
-    public float timeToStart { get { return m_TimeToStart; } }  // Will return -1 if already started (allow to update UI)
-
+    public float timeToStart { get { return m_TimeToStart; } }  
     public int score { get { return m_Score; } }
     public int multiplier { get { return m_Multiplier; } }
     public float currentSegmentDistance { get { return m_CurrentSegmentDistance; } }
@@ -82,13 +66,12 @@ public class TrackManager : MonoBehaviour
 
     public bool isTutorial { get { return m_IsTutorial; } set { m_IsTutorial = value; } }
     public bool isLoaded { get; set; }
-    //used by the obstacle spawning code in the tutorial, as it need to spawn the 1st obstacle in the middle lane
+    
     public bool firstObstacle { get; set; }
 
     protected float m_TimeToStart = -1.0f;
 
-    // If this is set to -1, random seed is init to system clock, otherwise init to that value
-    // Allow to play the same game multiple time (useful to make specific competition/challenge fair between players)
+  
     protected int m_TrackSeed = -1;
 
     protected float m_CurrentSegmentDistance;
@@ -96,7 +79,7 @@ public class TrackManager : MonoBehaviour
     protected bool m_IsMoving;
     protected float m_Speed;
 
-    protected float m_TimeSincePowerup;     // The higher it goes, the higher the chance of spawning one
+    protected float m_TimeSincePowerup;     
     protected float m_TimeSinceLastPremium;
 
     protected int m_Multiplier;
@@ -112,9 +95,9 @@ public class TrackManager : MonoBehaviour
 
     protected int m_Score;
     protected float m_ScoreAccum;
-    protected bool m_Rerun;     // This lets us know if we are entering a game over (ads) state or starting a new game (see GameState)
+    protected bool m_Rerun;     
 
-    protected bool m_IsTutorial; //Tutorial is a special run that don't chance section until the tutorial step is "validated" by the TutorialState.
+    protected bool m_IsTutorial; 
     
     Vector3 m_CameraOriginalPos = Vector3.zero;
     
@@ -164,7 +147,7 @@ public class TrackManager : MonoBehaviour
 
         if (m_Rerun)
         {
-            // Make invincible on rerun, to avoid problems if the character died in front of an obstacle
+            
             characterController.characterCollider.SetInvincible();
         }
 
@@ -184,14 +167,13 @@ public class TrackManager : MonoBehaviour
             else
                 Random.InitState((int)System.DateTime.Now.Ticks);
 
-            // Since this is not a rerun, init the whole system (on rerun we want to keep the states we had on death)
+            
             m_CurrentSegmentDistance = k_StartingSegmentDistance;
             m_TotalWorldDistance = 0.0f;
 
             characterController.gameObject.SetActive(true);
 
-            //Addressables 1.0.1-preview
-            // Spawn the player
+           
             var op = Addressables.InstantiateAsync(PlayerData.instance.characters[PlayerData.instance.usedCharacter],
                 Vector3.zero,
                 Quaternion.identity);
@@ -211,7 +193,7 @@ public class TrackManager : MonoBehaviour
             characterController.Init();
             characterController.CheatInvincible(invincible);
             
-            //Instantiate(CharacterDatabase.GetCharacter(PlayerData.instance.characters[PlayerData.instance.usedCharacter]), Vector3.zero, Quaternion.identity);
+            
             player.transform.SetParent(characterController.characterCollider.transform, false);
             Camera.main.transform.SetParent(characterController.transform, true);
 
@@ -289,7 +271,7 @@ public class TrackManager : MonoBehaviour
             Destroy(parallaxRoot.GetChild(i).gameObject);
         }
 
-        //if our consumable wasn't used, we put it back in our inventory
+
         if (characterController.inventory != null)
         {
             PlayerData.instance.Add(characterController.inventory.GetConsumableType());
@@ -352,8 +334,7 @@ public class TrackManager : MonoBehaviour
         {
             m_CurrentSegmentDistance -= m_Segments[0].worldLength;
 
-            // m_PastSegments are segment we already passed, we keep them to move them and destroy them later 
-            // but they aren't part of the game anymore 
+           
             m_PastSegments.Add(m_Segments[0]);
             m_Segments.RemoveAt(0);
             _spawnedSegments--;
@@ -368,11 +349,10 @@ public class TrackManager : MonoBehaviour
         m_Segments[0].GetPointAtInWorldUnit(m_CurrentSegmentDistance, out currentPos, out currentRot);
 
 
-        // Floating origin implementation
-        // Move the whole world back to 0,0,0 when we get too far away.
+        
         bool needRecenter = currentPos.sqrMagnitude > k_FloatingOriginThreshold;
 
-        // Parallax Handling
+       
         if (parallaxRoot != null)
         {
             Vector3 difference = (currentPos - characterTransform.position) * parallaxRatio; ;
@@ -398,7 +378,7 @@ public class TrackManager : MonoBehaviour
                 m_PastSegments[i].transform.position -= currentPos;
             }
 
-            // Recalculate current world position based on the moved world
+            
             m_Segments[0].GetPointAtInWorldUnit(m_CurrentSegmentDistance, out currentPos, out currentRot);
         }
 
@@ -411,7 +391,7 @@ public class TrackManager : MonoBehaviour
             {
                 Transform child = parallaxRoot.GetChild(i);
 
-                // Destroy unneeded clouds
+                
                 if ((child.localPosition - currentPos).z < -50)
                 {
                     _parallaxRootChildren--;
@@ -420,7 +400,7 @@ public class TrackManager : MonoBehaviour
             }
         }
 
-        // Still move past segment until they aren't visible anymore.
+        
         for (int i = 0; i < m_PastSegments.Count; ++i)
         {
             if ((m_PastSegments[i].transform.position - currentPos).z < k_SegmentRemovalDistance)
@@ -453,7 +433,7 @@ public class TrackManager : MonoBehaviour
 
         if (!m_IsTutorial)
         {
-            //check for next rank achieved
+            
             int currentTarget = (PlayerData.instance.rank + 1) * 300;
             if (m_TotalWorldDistance > currentTarget)
             {
@@ -598,7 +578,7 @@ public class TrackManager : MonoBehaviour
                     testedLane = (testedLane + 1) % 3;
                     if (currentLane == testedLane)
                     {
-                        // Couldn't find a valid lane.
+                        
                         laneValid = false;
                         break;
                     }
@@ -616,10 +596,10 @@ public class TrackManager : MonoBehaviour
                     {
                         int picked = Random.Range(0, consumableDatabase.consumbales.Length);
 
-                        //if the powerup can't be spawned, we don't reset the time since powerup to continue to have a high chance of picking one next track segment
+                        
                         if (consumableDatabase.consumbales[picked].canBeSpawned)
                         {
-                            // Spawn a powerup instead.
+                            
                             m_TimeSincePowerup = 0.0f;
                             powerupChance = 0.0f;
 
@@ -657,7 +637,7 @@ public class TrackManager : MonoBehaviour
 
                     if (toUse != null)
                     {
-                        //TODO : remove that hack related to #issue7
+                        
                         Vector3 oldPos = toUse.transform.position;
                         toUse.transform.position += Vector3.back;
                         toUse.transform.position = oldPos;

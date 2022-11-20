@@ -103,7 +103,7 @@ public class ShopAccessoriesList : ShopList
 	    accessoryIndex++;
 
 	    if (accessoryIndex == c.accessories.Length)
-	    {//we finish the current character accessory, load the next character
+	    {
 
 		    characterIndex++;
 		    if (characterIndex < m_CharacterList.Count)
@@ -162,7 +162,7 @@ public class ShopAccessoriesList : ShopList
 		PlayerData.instance.AddAccessory(name);
         PlayerData.instance.Save();
 
-#if UNITY_ANALYTICS // Using Analytics Standard Events v0.3.0
+#if UNITY_ANALYTICS 
         var transactionId = System.Guid.NewGuid().ToString();
         var transactionContext = "store";
         var level = PlayerData.instance.rank.ToString();

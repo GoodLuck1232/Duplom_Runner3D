@@ -38,7 +38,7 @@ public class IAPHandler : MonoBehaviour
             PlayerData.instance.premium += amount;
             PlayerData.instance.Save();
 
-#if UNITY_ANALYTICS // Using Analytics Standard Events v0.3.0
+#if UNITY_ANALYTICS 
             var transactionId = product.transactionID;
             var transactionContext = "premium_store";
             var itemId = product.definition.id;

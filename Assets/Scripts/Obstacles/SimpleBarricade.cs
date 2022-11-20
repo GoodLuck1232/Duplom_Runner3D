@@ -13,7 +13,7 @@ public class SimpleBarricade : Obstacle
     
     public override IEnumerator Spawn(TrackSegment segment, float t)
     {
-        //the tutorial very firts barricade need to be center and alone, so player can swipe safely in bother direction to avoid it
+        
         bool isTutorialFirst = TrackManager.instance.isTutorial && TrackManager.instance.firstObstacle && segment == segment.manager.currentSegment;
 
         if (isTutorialFirst)
@@ -48,7 +48,7 @@ public class SimpleBarricade : Obstacle
 
                 obj.transform.SetParent(segment.objectRoot, true);
 
-                //TODO : remove that hack related to #issue7
+                
                 Vector3 oldPos = obj.transform.position;
                 obj.transform.position += Vector3.back;
                 obj.transform.position = oldPos;

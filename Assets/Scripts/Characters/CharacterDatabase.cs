@@ -3,9 +3,7 @@ using UnityEngine.AddressableAssets;
 using System.Collections;
 using System.Collections.Generic;
 
-/// <summary>
-/// This allows us to store a database of all characters currently in the bundles, indexed by name.
-/// </summary>
+
 public class CharacterDatabase
 {
     static protected Dictionary<string, Character> m_CharactersDict;

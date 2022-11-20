@@ -3,13 +3,10 @@ using System.IO;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-/// <summary>
-/// Base abstract class used to define a mission the player needs to complete to gain some premium currency.
-/// Subclassed for every mission.
-/// </summary>
+
 public abstract class MissionBase
 {
-    // Mission type
+    
     public enum MissionType
     {
         SINGLE_RUN,

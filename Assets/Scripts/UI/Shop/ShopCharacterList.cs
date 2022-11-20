@@ -97,7 +97,7 @@ public class ShopCharacterList : ShopList
         PlayerData.instance.AddCharacter(c.characterName);
         PlayerData.instance.Save();
 
-#if UNITY_ANALYTICS // Using Analytics Standard Events v0.3.0
+#if UNITY_ANALYTICS 
         var transactionId = System.Guid.NewGuid().ToString();
         var transactionContext = "store";
         var level = PlayerData.instance.rank.ToString();
@@ -144,7 +144,7 @@ public class ShopCharacterList : ShopList
         }
 #endif
 
-        // Repopulate to change button accordingly.
+        
         Populate();
     }
 }

@@ -4,9 +4,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-/// <summary>
-/// Obstacle that starts moving forward in its lane when the player is close enough.
-/// </summary>
+
 public class Missile : Obstacle
 {
 	static int s_DeathHash = Animator.StringToHash("Death");
@@ -54,7 +52,7 @@ public class Missile : Obstacle
 	    Missile missile = obj.GetComponent<Missile>();
 	    missile.m_OwnSegement = segment;
 
-        //TODO : remove that hack related to #issue7
+        
         Vector3 oldPos = obj.transform.position;
         obj.transform.position += Vector3.back;
         obj.transform.position = oldPos;

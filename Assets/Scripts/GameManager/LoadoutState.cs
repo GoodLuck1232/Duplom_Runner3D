@@ -9,10 +9,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.Analytics;
 #endif
 
-/// <summary>
-/// State pushed on the GameManager during the Loadout, when player select player, theme and accessories
-/// Take care of init the UI, load all the data used for it etc.
-/// </summary>
+
 public class LoadoutState : AState
 {
     public Canvas inventoryCanvas;
@@ -87,7 +84,7 @@ public class LoadoutState : AState
         skyMeshFilter.gameObject.SetActive(true);
         UIGroundFilter.gameObject.SetActive(true);
 
-        // Reseting the global blinking value. Can happen if the game unexpectedly exited while still blinking
+        
         Shader.SetGlobalFloat("_BlinkingValue", 0.0f);
 
         if (MusicPlayer.instance.GetStem(0) != menuTheme)
@@ -101,7 +98,7 @@ public class LoadoutState : AState
 
         if(m_PowerupToUse != Consumable.ConsumableType.NONE)
         {
-            //if we come back from a run and we don't have any more of the powerup we wanted to use, we reset the powerup to use to NONE
+            
             if (!PlayerData.instance.consumables.ContainsKey(m_PowerupToUse) || PlayerData.instance.consumables[m_PowerupToUse] == 0)
                 m_PowerupToUse = Consumable.ConsumableType.NONE;
         }
@@ -125,7 +122,7 @@ public class LoadoutState : AState
         {
 			gs.currentModifier = m_CurrentModifier;
 			
-            // We reset the modifier to a default one, for next run (if a new modifier is applied, it will replace this default one before the run starts)
+            
 			m_CurrentModifier = new Modifier();
 
 			if (m_PowerupToUse != Consumable.ConsumableType.NONE)
@@ -161,7 +158,7 @@ public class LoadoutState : AState
                 runButton.interactable = true;
                 runButton.GetComponentInChildren<Text>().text = "Run!";
 
-                //we can always enabled, as the parent will be disabled if tutorial is already done
+                
                 tutorialPrompt.SetActive(true);
             }
         }
@@ -254,7 +251,7 @@ public class LoadoutState : AState
                     m_OwnedAccesories.Clear();
                     for (int i = 0; i < c.accessories.Length; ++i)
                     {
-						// Check which accessories we own.
+						
                         string compoundName = c.characterName + ":" + c.accessories[i].accessoryName;
                         if (PlayerData.instance.characterAccessories.Contains(compoundName))
                         {
@@ -294,9 +291,7 @@ public class LoadoutState : AState
                     charNameDisplay.text = c.characterName;
 
                     m_Character.transform.localPosition = Vector3.right * 1000;
-                    //animator will take a frame to initialize, during which the character will be in a T-pose.
-                    //So we move the character off screen, wait that initialised frame, then move the character back in place.
-                    //That avoid an ugly "T-pose" flash time
+                    
                     yield return new WaitForEndOfFrame();
                     m_Character.transform.localPosition = Vector3.zero;
 
